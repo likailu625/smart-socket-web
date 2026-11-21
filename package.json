@@ -1,0 +1,10 @@
+{
+  "name": "smart-socket-cloud",
+  "version": "1.0.0",
+  "description": "基于气溶胶灭火原理的多功能智能插座 V1.0 云端监控平台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": { "node": ">=14" }
+}

@@ -1,0 +1,28 @@
+# Render.com 免费云托管配置
+# 部署方法：Render 控制台 → New → Web Service → 连接本仓库 → 自动读取本文件
+services:
+  - type: web
+    name: smart-socket-web
+    runtime: node
+    plan: free                    # 免费套餐，无需绑卡
+    buildCommand: "true"          # 零依赖，无需构建
+    startCommand: node server.js
+    envVars:
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        sync: false               # 部署时在控制台手动填，不要写进仓库
+      - key: DEVICE_KEY
+        sync: false               # 同上
+      - key: HW_IOTDA_REGION
+        sync: false               # 华为云四项配好即启用影子拉取
+      - key: HW_IOTDA_PROJECT_ID
+        sync: false
+      - key: HW_IOTDA_DEVICE_ID
+        sync: false
+      - key: HW_IAM_DOMAIN_NAME
+        sync: false
+      - key: HW_IAM_USER_NAME
+        sync: false
+      - key: HW_IAM_PASSWORD
+        sync: false

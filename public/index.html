@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多功能智能插座云端监控平台 V1.0</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ==================== 登录界面 ==================== -->
+<div id="login-view" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="#e5484d" stroke-width="4"/>
+        <path d="M32 14 L38 34 L32 34 L36 50 L26 36 L31 36 Z" fill="#e5484d"/>
+        <path d="M20 40 Q26 46 32 44 T44 40" fill="none" stroke="#e5484d" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>多功能智能插座</h1>
+    <p class="login-sub">基于气溶胶灭火原理 · 云端监控平台 V1.0</p>
+    <form id="login-form" autocomplete="off">
+      <div class="field">
+        <label for="username">用户名</label>
+        <input type="text" id="username" placeholder="请输入用户名" required>
+      </div>
+      <div class="field">
+        <label for="password">密码</label>
+        <input type="password" id="password" placeholder="请输入密码" required>
+      </div>
+      <div id="login-error" class="login-error" hidden></div>
+      <button type="submit" class="btn btn-primary btn-block" id="login-btn">登 录</button>
+    </form>
+    <p class="login-tip">默认账号：admin / admin123（部署后请修改）</p>
+  </div>
+</div>
+
+<!-- ==================== 监控界面 ==================== -->
+<div id="app-view" class="app" hidden>
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="brand-dot"></span>
+      <span class="brand">多功能智能插座云端监控平台</span>
+      <span class="ver">V1.0</span>
+    </div>
+    <div class="topbar-right">
+      <span class="conn" id="conn-badge"><i></i>在线</span>
+      <span class="user" id="user-name">admin</span>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">退出</button>
+    </div>
+  </header>
+
+  <!-- 报警横幅 -->
+  <div id="alarm-banner" class="alarm-banner level0" hidden>
+    <span id="alarm-icon"></span>
+    <span id="alarm-text"></span>
+  </div>
+
+  <main class="container">
+
+    <!-- 设备信息卡 -->
+    <section class="device-card">
+      <div class="device-head">
+        <div>
+          <h2 id="device-name">新的设备</h2>
+          <div class="device-meta">
+            <span id="device-model">CFCG-M1</span> ·
+            <span id="device-version">V1.0</span> ·
+            <span id="update-time">--</span>
+          </div>
+        </div>
+        <div class="device-actions">
+          <button class="btn btn-ghost btn-sm" id="refresh-btn">↻ 刷新</button>
+        </div>
+      </div>
+
+      <!-- 风险指数 -->
+      <div class="risk-row">
+        <div class="risk-gauge">
+          <svg viewBox="0 0 120 70" width="150">
+            <path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="#e5e7eb" stroke-width="10" stroke-linecap="round"/>
+            <path id="risk-arc" d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="#22c55e" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 999"/>
+            <text id="risk-value" x="60" y="58" text-anchor="middle" font-size="22" font-weight="700" fill="#111827">0</text>
+          </svg>
+        </div>
+        <div class="risk-info">
+          <h3>综合火灾风险指数 R</h3>
+          <p>多参量加权融合算法（层次分析法确定权重）</p>
+          <div class="risk-levels">
+            <span class="lv lv0">0–29 正常</span>
+            <span class="lv lv1">30–59 预警级</span>
+            <span class="lv lv2">60–84 报警级</span>
+            <span class="lv lv3">≥85 处置级</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 六项核心监测参数卡片 -->
+    <section class="cards" id="param-cards">
+      <div class="card">
+        <div class="card-label">环境温度</div>
+        <div class="card-value"><span id="v-env">--</span><small>℃</small></div>
+        <div class="card-src">DS18B20</div>
+      </div>
+      <div class="card">
+        <div class="card-label">红外温度</div>
+        <div class="card-value"><span id="v-ir">--</span><small>℃</small></div>
+        <div class="card-src">MLX90614 非接触</div>
+      </div>
+      <div class="card">
+        <div class="card-label">可燃气体浓度</div>
+        <div class="card-value"><span id="v-smoke">--</span><small>ppm</small></div>
+        <div class="card-src">MQ-2 烟雾</div>
+      </div>
+      <div class="card">
+        <div class="card-label">一氧化碳浓度</div>
+        <div class="card-value"><span id="v-co">--</span><small>ppm</small></div>
+        <div class="card-src">MQ-7</div>
+      </div>
+      <div class="card">
+        <div class="card-label">电流</div>
+        <div class="card-value"><span id="v-cur">--</span><small>A</small></div>
+        <div class="card-src">电流互感器</div>
+      </div>
+      <div class="card">
+        <div class="card-label">电压</div>
+        <div class="card-value"><span id="v-vol">--</span><small>V</small></div>
+        <div class="card-src">电压互感器</div>
+      </div>
+    </section>
+
+    <div class="grid-2col">
+
+      <!-- 远程管控 -->
+      <section class="panel">
+        <h3>远程管控</h3>
+        <div class="ctrl-list">
+          <div class="ctrl-item">
+            <div>
+              <div class="ctrl-name">负载供电（继电器）</div>
+              <div class="ctrl-desc">220V 插座负载通断 · 常开触点设计</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="sw-relay">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="ctrl-item">
+            <div>
+              <div class="ctrl-name">蜂鸣器</div>
+              <div class="ctrl-desc">本地声光预警消音 / 恢复</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="sw-buzzer">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="ctrl-item">
+            <div>
+              <div class="ctrl-name">灭火装置状态</div>
+              <div class="ctrl-desc" id="aerosol-status">未触发（单次设计，触发后需更换）</div>
+            </div>
+            <span class="tag tag-ok" id="aerosol-tag">正常</span>
+          </div>
+          <div class="ctrl-item">
+            <div>
+              <div class="ctrl-name">远程复位</div>
+              <div class="ctrl-desc">复位报警状态与传感器基线</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="reset-btn">复位</button>
+          </div>
+        </div>
+
+        <div class="demo-row">
+          <span class="demo-label">演示模拟（无硬件时展示三级预警流程）：</span>
+          <button class="btn btn-ghost btn-sm" data-demo="demo_smoke">模拟烟雾积聚</button>
+          <button class="btn btn-ghost btn-sm" data-demo="demo_heat">模拟负载过热</button>
+          <button class="btn btn-ghost btn-sm" data-demo="demo_stop">停止模拟</button>
+        </div>
+      </section>
+
+      <!-- 报警记录 -->
+      <section class="panel">
+        <h3>报警记录（云端记录）</h3>
+        <div class="alarm-list" id="alarm-list">
+          <div class="alarm-empty">暂无报警记录</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 历史数据 -->
+    <section class="panel">
+      <div class="panel-head">
+        <h3>历史数据查询</h3>
+        <div class="range-btns">
+          <button class="btn btn-ghost btn-sm range active" data-range="60">近1小时</button>
+          <button class="btn btn-ghost btn-sm range" data-range="360">近6小时</button>
+          <button class="btn btn-ghost btn-sm range" data-range="1440">近24小时</button>
+        </div>
+      </div>
+      <div class="chart-block">
+        <div class="chart-title">温度 / 浓度曲线</div>
+        <canvas id="chart-temp" height="180"></canvas>
+      </div>
+      <div class="chart-block">
+        <div class="chart-title">电流 / 电压曲线</div>
+        <canvas id="chart-elec" height="180"></canvas>
+      </div>
+    </section>
+
+    <footer class="foot">
+      基于气溶胶灭火原理的多功能智能插座 V1.0 · STM32F103C8T6 + ESP8266 · 华为云 IoTDA 接入
+    </footer>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
