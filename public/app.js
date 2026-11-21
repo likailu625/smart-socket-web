@@ -194,7 +194,7 @@ $('reset-btn').addEventListener('click', async () => {
 document.querySelectorAll('[data-demo]').forEach((btn) => {
   btn.addEventListener('click', async () => {
     await api('/api/control', { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()), body: JSON.stringify({ action: btn.dataset.demo }) });
-    toast(btn.dataset.demo === 'demo_stop' ? '模拟已停止' : '模拟事件已注入，请观察风险指数变化');
+    toast(btn.dataset.demo === 'demo_stop' ? '自检已结束' : '预警事件已注入，请观察风险指数与联动响应');
   });
 });
 

@@ -57,7 +57,15 @@ body {
   padding: 8px 10px; border-radius: 8px; font-size: 12px; margin-bottom: 14px;
   text-align: left;
 }
-.login-tip { color: #9ca3af; font-size: 11px; margin-top: 16px; }
+.login-footer {
+  position: fixed;
+  left: 0; right: 0; bottom: 14px;
+  text-align: center;
+  color: rgba(255,255,255,.45);
+  font-size: 11px;
+  letter-spacing: .5px;
+  pointer-events: none;
+}
 
 /* ---------------- 按钮 ---------------- */
 .btn {
